@@ -1,15 +1,10 @@
 package com.parser.ytparser.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class YouTubeChannelResponse {
     private List<YouTubeChannelItem> items;
-
-    public List<YouTubeChannelItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<YouTubeChannelItem> items) {
-        this.items = items;
-    }
 }

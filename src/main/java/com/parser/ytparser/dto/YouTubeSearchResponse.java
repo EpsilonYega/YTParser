@@ -1,15 +1,10 @@
 package com.parser.ytparser.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class YouTubeSearchResponse {
     private List<YouTubeSearchItem> items;
-
-    public List<YouTubeSearchItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<YouTubeSearchItem> items) {
-        this.items = items;
-    }
 }
