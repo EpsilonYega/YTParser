@@ -5,15 +5,23 @@ import com.parser.ytparser.dto.YouTubeChannelResponse;
 import com.parser.ytparser.dto.YouTubeSearchItem;
 import com.parser.ytparser.dto.YouTubeSearchResponse;
 import com.parser.ytparser.model.ChannelInfo;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.poi.ss.usermodel.TableStyleType.headerRow;
 
 @Service
 public class YouTubeService {
@@ -72,6 +80,39 @@ public class YouTubeService {
                 }
             }
         }
+        writeChannelsToExcel(channels, "channels.xlsx");
         return channels;
+    }
+    public void writeChannelsToExcel(List<ChannelInfo> channels, String filePath) {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("YouTube Channels");
+
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Channel Name");
+        headerRow.createCell(1).setCellValue("Channel URL");
+        headerRow.createCell(2).setCellValue("Subscriber Count");
+
+        int rowNum = 1;
+        for (ChannelInfo channel : channels) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(channel.getChannelName());
+            row.createCell(1).setCellValue(channel.getChannelUrl());
+            row.createCell(2).setCellValue(channel.getSubscriberCount().doubleValue());
+        }
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+            workbook.write(fileOut);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                workbook.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
